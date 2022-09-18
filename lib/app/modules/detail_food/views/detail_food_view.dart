@@ -162,11 +162,19 @@ class DetailFoodView extends GetView<DetailFoodController> {
                               ),
                             ),
                             10.verticalSpace,
-                            Text(
-                              "${snapshot.data!.waktuPembuatan} Menit",
-                              style: TextStyle(
-                                fontSize: 16.sp,
-                              ),
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.timer,
+                                  color: Colors.orange,
+                                ),
+                                Text(
+                                  "${snapshot.data!.waktuPembuatan} Menit",
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                  ),
+                                ),
+                              ],
                             ),
                             20.verticalSpace,
                             Text(
@@ -304,7 +312,7 @@ class DetailFoodView extends GetView<DetailFoodController> {
                 ),
                 15.verticalSpace,
                 Text(
-                  "Harga",
+                  "Waktu Pembuatan",
                   style: TextStyle(
                     fontSize: ScreenUtil().setSp(12),
                   ),
