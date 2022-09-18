@@ -20,13 +20,14 @@ class DetailFoodController extends GetxController {
     refDoc.delete();
   }
 
-  Future<void> updateMenu(String id, String nama, int harga, String jenis,
-      String image, String resep) async {
+  Future<void> updateMenu(String id, String nama, int waktuPembuatan,
+      String deskripsi, String jenis, String image, String resep) async {
     final refDoc = ref.doc(id);
     final data = {
       "id": id,
       "nama": nama,
-      "harga": harga,
+      "waktu_pembuatan": waktuPembuatan,
+      "deskripsi": deskripsi,
       "jenis": jenis,
       "images": image,
       "resep": resep,
@@ -50,7 +51,8 @@ class DetailFoodController extends GetxController {
   Future<void> updateMenuWithImage(
     String id,
     String nama,
-    int harga,
+    int waktuPembuatan,
+    String deskripsi,
     String jenis,
     File images,
     String resep,
@@ -60,7 +62,8 @@ class DetailFoodController extends GetxController {
     final data = {
       "id": id,
       "nama": nama,
-      "harga": harga,
+      "waktu_pembuatan": waktuPembuatan,
+      "deskripsi": deskripsi,
       "jenis": jenis,
       "images": imageURL,
       "resep": resep,

@@ -197,7 +197,7 @@ class HomeView extends GetView<HomeController> {
                                           Row(
                                             children: [
                                               Icon(
-                                                Icons.access_time_outlined,
+                                                Icons.alarm,
                                                 color: Colors.grey[600],
                                               ),
                                               5.horizontalSpace,

@@ -1,7 +1,8 @@
 class Food {
   String id;
   final String nama;
-  final int harga;
+  final int waktuPembuatan;
+  final String deskripsi;
   final String jenis;
   final String images;
   final String resep;
@@ -9,7 +10,8 @@ class Food {
   Food({
     this.id = "",
     required this.nama,
-    required this.harga,
+    required this.waktuPembuatan,
+    required this.deskripsi,
     required this.jenis,
     required this.images,
     required this.resep,
@@ -19,7 +21,8 @@ class Food {
     return Food(
       id: json['id'] as String,
       nama: json['nama'] as String,
-      harga: json['harga'] as int,
+      deskripsi: json['deskripsi'] as String,
+      waktuPembuatan: json['waktu_pembuatan'] as int,
       jenis: json['jenis'] as String,
       images: json['images'] as String,
       resep: json['resep'] as String,
@@ -30,7 +33,8 @@ class Food {
     return {
       'id': id,
       'nama': nama,
-      'harga': harga,
+      'deskripsi': deskripsi,
+      'waktu_pembuatan': waktuPembuatan,
       'jenis': jenis,
       'images': images,
       'resep': resep,

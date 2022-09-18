@@ -178,11 +178,13 @@ class DetailFoodView extends GetView<DetailFoodController> {
   void editMenu(Food food, BuildContext context) {
     final image = XFile("").obs;
     final namaController = TextEditingController();
-    final hargaController = TextEditingController();
+    final waktuPembuatanController = TextEditingController();
     final resepController = TextEditingController();
+    final deskripsiController = TextEditingController();
     namaController.text = food.nama;
-    hargaController.text = food.harga.toString();
+    waktuPembuatanController.text = food.waktuPembuatan.toString();
     resepController.text = food.resep;
+    deskripsiController.text = food.deskripsi;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -270,8 +272,21 @@ class DetailFoodView extends GetView<DetailFoodController> {
                 ),
                 10.verticalSpace,
                 RoundedInputField(
-                  textEditingController: hargaController,
+                  textEditingController: waktuPembuatanController,
                   hintText: food.resep.toString(),
+                ),
+                10.verticalSpace,
+                Text(
+                  "Deskripsi",
+                  style: TextStyle(
+                    fontSize: ScreenUtil().setSp(12),
+                  ),
+                ),
+                10.verticalSpace,
+                RoundedInputField(
+                  maxLines: 5,
+                  textEditingController: deskripsiController,
+                  hintText: food.nama.toString(),
                 ),
                 10.verticalSpace,
                 Text(
@@ -323,7 +338,8 @@ class DetailFoodView extends GetView<DetailFoodController> {
                               await controller.updateMenuWithImage(
                                 food.id,
                                 namaController.text,
-                                int.parse(hargaController.text),
+                                int.parse(waktuPembuatanController.text),
+                                deskripsiController.text,
                                 food.jenis,
                                 File(image.value.path),
                                 resepController.text,
@@ -332,7 +348,8 @@ class DetailFoodView extends GetView<DetailFoodController> {
                               await controller.updateMenu(
                                 food.id,
                                 namaController.text,
-                                int.parse(hargaController.text),
+                                int.parse(waktuPembuatanController.text),
+                                deskripsiController.text,
                                 food.jenis,
                                 food.images,
                                 resepController.text,

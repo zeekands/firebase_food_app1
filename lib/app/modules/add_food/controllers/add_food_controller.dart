@@ -11,8 +11,9 @@ class AddFoodController extends GetxController {
 
   CollectionReference ref = FirebaseFirestore.instance.collection('Food');
   TextEditingController namaController = TextEditingController();
-  TextEditingController hargaController = TextEditingController();
+  TextEditingController waktuPembuatanController = TextEditingController();
   TextEditingController deskripsiController = TextEditingController();
+  TextEditingController resepController = TextEditingController();
 
   final selectJenis = [
     "Makanan",
@@ -46,8 +47,9 @@ class AddFoodController extends GetxController {
   @override
   void onClose() {
     namaController.dispose();
-    hargaController.dispose();
+    waktuPembuatanController.dispose();
     deskripsiController.dispose();
+    resepController.dispose();
     super.onClose();
   }
 
@@ -55,7 +57,6 @@ class AddFoodController extends GetxController {
     final storageReference =
         FirebaseStorage.instance.ref().child('Menus/${image.path}');
     await storageReference.putFile(image);
-    print('File Uploaded');
     String returnURL = "";
     await storageReference.getDownloadURL().then(
       (fileURL) {
@@ -68,7 +69,8 @@ class AddFoodController extends GetxController {
   Future<void> saveImages(
     File images,
     String nama,
-    int harga,
+    int waktuPembuatan,
+    String deskripsi,
     String jenis,
     String resep,
   ) async {
@@ -96,7 +98,8 @@ class AddFoodController extends GetxController {
     final data = {
       "id": refDoc.id,
       "nama": nama,
-      "harga": harga,
+      "deskripsi": deskripsi,
+      "waktu_pembuatan": waktuPembuatan,
       "jenis": jenis,
       "resep": resep,
       "images": imageURL
@@ -108,7 +111,8 @@ class AddFoodController extends GetxController {
   Future<void> editMenu(
     String id,
     String nama,
-    int harga,
+    int waktuPembuatan,
+    String deskripsi,
     String jenis,
     File images,
     String resep,
@@ -118,7 +122,8 @@ class AddFoodController extends GetxController {
     final data = {
       "id": id,
       "nama": nama,
-      "harga": harga,
+      "deskripsi": deskripsi,
+      "waktu_pembuatan": waktuPembuatan,
       "jenis": jenis,
       "resep": resep,
       "images": imageURL

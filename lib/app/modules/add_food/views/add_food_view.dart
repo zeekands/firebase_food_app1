@@ -75,7 +75,7 @@ class AddFoodView extends GetView<AddFoodController> {
               ),
               20.verticalSpace,
               TextField(
-                controller: controller.hargaController,
+                controller: controller.waktuPembuatanController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   labelText: 'Estimasi Pembuatan (Dalam menit)',
@@ -89,6 +89,19 @@ class AddFoodView extends GetView<AddFoodController> {
               20.verticalSpace,
               TextField(
                 controller: controller.deskripsiController,
+                maxLines: 5,
+                decoration: const InputDecoration(
+                  labelText: 'Deskripsi',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                  ),
+                ),
+              ),
+              20.verticalSpace,
+              TextField(
+                controller: controller.resepController,
                 maxLines: 10,
                 decoration: const InputDecoration(
                   labelText: 'Resep',
@@ -130,7 +143,8 @@ class AddFoodView extends GetView<AddFoodController> {
               GestureDetector(
                 onTap: () async {
                   if (controller.namaController.text.isEmpty ||
-                      controller.hargaController.text.isEmpty ||
+                      controller.waktuPembuatanController.text.isEmpty ||
+                      controller.deskripsiController.text.isEmpty ||
                       controller.selectedJenis.value.isEmpty ||
                       controller.image.value.path.isEmpty) {
                     Get.snackbar('Error', 'Lengkapi data terlebih dahulu',
@@ -144,9 +158,10 @@ class AddFoodView extends GetView<AddFoodController> {
                     await controller.saveImages(
                         File(controller.image.value.path),
                         controller.namaController.text,
-                        int.parse(controller.hargaController.text),
+                        int.parse(controller.waktuPembuatanController.text),
+                        controller.deskripsiController.text,
                         controller.selectedJenis.value,
-                        controller.deskripsiController.text);
+                        controller.resepController.text);
                     Get.back();
                     Get.snackbar("Berhasil", "Menu berhasil ditambahkan.",
                         backgroundColor: Colors.green, colorText: Colors.white);

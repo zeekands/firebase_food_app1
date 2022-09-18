@@ -194,7 +194,7 @@ class HomeSearchDelegate extends SearchDelegate {
                                   color: Colors.amber,
                                 ),
                                 child: Text(
-                                  "Rp. ${controller.getCurrency(snapshot.data?[index].harga.toDouble() ?? 0)}",
+                                  "Rp. ${controller.getCurrency(snapshot.data?[index].waktuPembuatan.toDouble() ?? 0)}",
                                   style: TextStyle(
                                     fontSize: 10.sp,
                                     color: Colors.white,
