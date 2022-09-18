@@ -115,7 +115,7 @@ class DetailFoodView extends GetView<DetailFoodController> {
                       ),
                     ).marginSymmetric(horizontal: 10.w, vertical: 10.h),
                     bottom: PreferredSize(
-                      preferredSize: const Size.fromHeight(100),
+                      preferredSize: const Size.fromHeight(70),
                       child: Container(
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(
@@ -154,6 +154,45 @@ class DetailFoodView extends GetView<DetailFoodController> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            Text(
+                              "Waktu Pembuatan",
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            10.verticalSpace,
+                            Text(
+                              "${snapshot.data!.waktuPembuatan} Menit",
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                              ),
+                            ),
+                            20.verticalSpace,
+                            Text(
+                              "Deskripsi",
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            10.verticalSpace,
+                            Text(
+                              snapshot.data!.deskripsi,
+                              textAlign: TextAlign.justify,
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                              ),
+                            ),
+                            20.verticalSpace,
+                            Text(
+                              "Resep dan Cara Membuat",
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            10.verticalSpace,
                             Text(
                               snapshot.data!.resep,
                               textAlign: TextAlign.justify,
