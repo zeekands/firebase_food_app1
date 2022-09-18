@@ -12,6 +12,7 @@ class AddFoodView extends GetView<AddFoodController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Tambah Menu Baru'),
         centerTitle: true,
@@ -52,7 +53,7 @@ class AddFoodView extends GetView<AddFoodController> {
                 () => Center(
                   child: controller.image.value.path != ""
                       ? IconButton(
-                          icon: const Icon(Icons.delete),
+                          icon: const Icon(Icons.delete, color: Colors.red),
                           onPressed: () async {
                             controller.image.value = XFile("");
                           },
@@ -65,7 +66,11 @@ class AddFoodView extends GetView<AddFoodController> {
                 controller: controller.namaController,
                 decoration: const InputDecoration(
                   labelText: 'Nama Menu',
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                  ),
                 ),
               ),
               20.verticalSpace,
@@ -73,17 +78,25 @@ class AddFoodView extends GetView<AddFoodController> {
                 controller: controller.hargaController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
-                  labelText: 'Harga',
-                  border: OutlineInputBorder(),
+                  labelText: 'Estimasi Pembuatan (Dalam menit)',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                  ),
                 ),
               ),
               20.verticalSpace,
               TextField(
                 controller: controller.deskripsiController,
-                maxLines: 5,
+                maxLines: 10,
                 decoration: const InputDecoration(
-                  labelText: 'Deskripsi',
-                  border: OutlineInputBorder(),
+                  labelText: 'Resep',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                  ),
                 ),
               ),
               10.verticalSpace,
@@ -141,7 +154,7 @@ class AddFoodView extends GetView<AddFoodController> {
                 },
                 child: Container(
                     width: 1.sw,
-                    height: 40.h,
+                    height: 50.h,
                     decoration: BoxDecoration(
                       color: Colors.red,
                       borderRadius: BorderRadius.circular(10),

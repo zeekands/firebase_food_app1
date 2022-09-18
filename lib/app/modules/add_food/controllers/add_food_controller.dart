@@ -70,8 +70,27 @@ class AddFoodController extends GetxController {
     String nama,
     int harga,
     String jenis,
-    String deskripsi,
+    String resep,
   ) async {
+    Get.bottomSheet(
+      Container(
+          height: 80,
+          alignment: Alignment.center,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: const [
+              CircularProgressIndicator(),
+              Text("Loading"),
+            ],
+          )),
+    );
     String imageURL = await uploadFile(images);
     final refDoc = ref.doc();
     final data = {
@@ -79,10 +98,11 @@ class AddFoodController extends GetxController {
       "nama": nama,
       "harga": harga,
       "jenis": jenis,
-      "deskripsi": deskripsi,
+      "resep": resep,
       "images": imageURL
     };
     refDoc.set(data);
+    Get.back();
   }
 
   Future<void> editMenu(
@@ -91,7 +111,7 @@ class AddFoodController extends GetxController {
     int harga,
     String jenis,
     File images,
-    String deskripsi,
+    String resep,
   ) async {
     String imageURL = await uploadFile(images);
     final refDoc = ref.doc(id);
@@ -100,7 +120,7 @@ class AddFoodController extends GetxController {
       "nama": nama,
       "harga": harga,
       "jenis": jenis,
-      "deskripsi": deskripsi,
+      "resep": resep,
       "images": imageURL
     };
     refDoc.set(data);

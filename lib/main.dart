@@ -18,7 +18,7 @@ void main() async {
         initialRoute: AppPages.INITIAL,
         getPages: AppPages.routes,
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          primarySwatch: Colors.red,
           backgroundColor: Colors.white,
           appBarTheme: const AppBarTheme(
             elevation: 0,

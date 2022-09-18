@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_food_app/app/data/Food.dart';
 import 'package:firebase_food_app/app/routes/app_pages.dart';
+import 'package:firebase_food_app/app/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -35,14 +36,9 @@ class HomeView extends GetView<HomeController> {
                 Flexible(
                   child: GestureDetector(
                     onTap: () {
-                      Get.snackbar(
-                        "Belum Tersedia",
-                        "Fitur yang dipilih Belum Tersedia",
-                        snackPosition: SnackPosition.BOTTOM,
-                        backgroundColor: Colors.red,
-                        colorText: Colors.white,
-                        margin: const EdgeInsets.all(10),
-                      );                                                        
+                      showSearch(
+                          context: context,
+                          delegate: HomeSearchDelegate(controller));
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -80,7 +76,6 @@ class HomeView extends GetView<HomeController> {
         onPressed: () {
           Get.toNamed(Routes.ADD_FOOD);
         },
-        backgroundColor: Colors.red,
         child: const Icon(Icons.add),
       ),
       body: Column(
@@ -88,8 +83,20 @@ class HomeView extends GetView<HomeController> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           20.verticalSpace,
-          Text("Pilih Food Disini",
-              style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w500)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("Katalog Resep Makanan",
+                  style:
+                      TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w500)),
+              IconButton(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.notifications,
+                    color: Colors.red,
+                  ))
+            ],
+          ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -112,97 +119,138 @@ class HomeView extends GetView<HomeController> {
                   stream: controller.readFood(controller
                       .buttonText[controller.selectedValueIndex.value]),
                   builder: (context, snapshot) {
-                    return GridView.builder(
-                      shrinkWrap: true,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        mainAxisSpacing: 10.h,
-                        crossAxisSpacing: 10.h,
-                        crossAxisCount: 2,
-                      ),
-                      itemBuilder: (_, index) => GestureDetector(
-                        onTap: () {},
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(
-                              ScreenUtil().setWidth(10),
-                            ),
-                            border: Border.all(
-                              color: Colors.grey[300]!,
-                              width: 1.h,
-                            ),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(
-                                    ScreenUtil().setWidth(10),
-                                  ),
-                                  topRight: Radius.circular(
-                                    ScreenUtil().setWidth(10),
-                                  ),
-                                ),
-                                child: CachedNetworkImage(
-                                  imageUrl: snapshot.data?[index].images ?? "",
-                                  height: 100.h,
-                                  width: 200.w,
-                                  fit: BoxFit.cover,
-                                  errorWidget: (context, url, error) =>
-                                      const Icon(Icons.error),
-                                ),
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    if (snapshot.hasError) {
+                      return const Center(
+                        child: Text("Error"),
+                      );
+                    }
+                    if (snapshot.hasData) {
+                      return GridView.builder(
+                        shrinkWrap: true,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          mainAxisSpacing: 10.h,
+                          crossAxisSpacing: 10.h,
+                          crossAxisCount: 2,
+                        ),
+                        itemBuilder: (_, index) => GestureDetector(
+                          onTap: () {
+                            Get.toNamed(Routes.DETAIL_FOOD,
+                                arguments: snapshot.data![index]);
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(
+                                ScreenUtil().setWidth(10),
                               ),
-                              Flexible(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      snapshot.data?[index].nama ?? "",
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
+                              border: Border.all(
+                                color: Colors.grey[300]!,
+                                width: 1.h,
+                              ),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(
+                                      ScreenUtil().setWidth(10),
+                                    ),
+                                    topRight: Radius.circular(
+                                      ScreenUtil().setWidth(10),
+                                    ),
+                                  ),
+                                  child: CachedNetworkImage(
+                                    imageUrl:
+                                        snapshot.data?[index].images ?? "",
+                                    height: 100.h,
+                                    width: 200.w,
+                                    fit: BoxFit.cover,
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(Icons.error),
+                                  ),
+                                ),
+                                Flexible(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        snapshot.data?[index].nama ?? "",
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    ),
-                                    const Spacer(),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "Rp ${controller.getCurrency(snapshot.data?[index].harga.toDouble() ?? 0)}",
-                                          style: TextStyle(
-                                            fontSize: ScreenUtil().setSp(12),
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.grey[600],
+                                      const Spacer(),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Icon(
+                                                Icons.access_time_outlined,
+                                                color: Colors.grey[600],
+                                              ),
+                                              5.horizontalSpace,
+                                              Text(
+                                                "${90} Menit",
+                                                style: TextStyle(
+                                                  fontSize:
+                                                      ScreenUtil().setSp(12),
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.grey[600],
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            controller.deleteMenu(
-                                                snapshot.data?[index].id ?? "");
-                                          },
-                                          child: Icon(
-                                            Icons.delete,
-                                            color: Colors.red,
-                                            size: 20.sp,
+                                          Container(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 5.r,
+                                              vertical: 5.r,
+                                            ),
+                                            height: 20.h,
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.all(
+                                                  Radius.circular(5.r),
+                                                ),
+                                                color: getColor(snapshot
+                                                        .data?[index].jenis ??
+                                                    "")),
+                                            child: Text(
+                                              "${snapshot.data?[index].jenis}",
+                                              style: TextStyle(
+                                                fontSize: 10.sp,
+                                                color: Colors.white,
+                                              ),
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    15.verticalSpace,
-                                  ],
-                                ).paddingOnly(
-                                    top: 10.h, left: 10.w, right: 10.w),
-                              ),
-                            ],
+                                        ],
+                                      ),
+                                      15.verticalSpace,
+                                    ],
+                                  ).paddingOnly(
+                                      top: 10.h, left: 10.w, right: 10.w),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      itemCount: snapshot.data?.length,
-                    );
+                        itemCount: snapshot.data?.length,
+                      );
+                    } else {
+                      return const Center(
+                        child: Text("Data Kosong"),
+                      );
+                    }
                   }),
             ),
           )
@@ -214,8 +262,7 @@ class HomeView extends GetView<HomeController> {
   Widget button(
       {required String text, required int index, required String image}) {
     return Obx(
-      () => InkWell(
-        splashColor: Colors.cyanAccent,
+      () => GestureDetector(
         onTap: () {
           controller.selectedValueIndex.value = index;
         },

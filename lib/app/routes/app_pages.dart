@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 
 import '../modules/add_food/bindings/add_food_binding.dart';
 import '../modules/add_food/views/add_food_view.dart';
+import '../modules/detail_food/bindings/detail_food_binding.dart';
+import '../modules/detail_food/views/detail_food_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 
@@ -22,6 +24,11 @@ class AppPages {
       name: _Paths.ADD_FOOD,
       page: () => const AddFoodView(),
       binding: AddFoodBinding(),
+    ),
+    GetPage(
+      name: _Paths.DETAIL_FOOD,
+      page: () => const DetailFoodView(),
+      binding: DetailFoodBinding(),
     ),
   ];
 }

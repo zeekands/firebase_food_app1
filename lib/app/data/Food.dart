@@ -4,6 +4,7 @@ class Food {
   final int harga;
   final String jenis;
   final String images;
+  final String resep;
 
   Food({
     this.id = "",
@@ -11,6 +12,7 @@ class Food {
     required this.harga,
     required this.jenis,
     required this.images,
+    required this.resep,
   });
 
   factory Food.fromJson(Map<String, dynamic> json) {
@@ -20,6 +22,7 @@ class Food {
       harga: json['harga'] as int,
       jenis: json['jenis'] as String,
       images: json['images'] as String,
+      resep: json['resep'] as String,
     );
   }
 
@@ -30,6 +33,7 @@ class Food {
       'harga': harga,
       'jenis': jenis,
       'images': images,
+      'resep': resep,
     };
   }
 }
