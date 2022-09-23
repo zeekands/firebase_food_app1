@@ -3,10 +3,14 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_food_app/app/data/Food.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:palette_generator/palette_generator.dart';
 
 class DetailFoodController extends GetxController {
   CollectionReference ref = FirebaseFirestore.instance.collection('Food');
+  Color dominantColor = Colors.red;
+  var food = Get.arguments as Food;
   Stream<Food> getFood(String id) {
     return FirebaseFirestore.instance
         .collection('Food')
@@ -69,5 +73,24 @@ class DetailFoodController extends GetxController {
       "resep": resep,
     };
     refDoc.set(data);
+  }
+
+  Future<Color> updatePaletteGenerator(String path) async {
+    final PaletteGenerator paletteGenerator =
+        await PaletteGenerator.fromImageProvider(
+      NetworkImage(path),
+    );
+    return paletteGenerator.dominantColor!.color;
+  }
+
+  @override
+  void onInit() async {
+    super.onInit();
+
+    await updatePaletteGenerator(food.images).then(
+      (value) {
+        dominantColor = value;
+      },
+    );
   }
 }

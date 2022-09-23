@@ -4,6 +4,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_food_app/app/data/Food.dart';
 import 'package:firebase_food_app/app/routes/app_pages.dart';
+import 'package:firebase_food_app/app/utils/colors.dart';
+import 'package:firebase_food_app/app/utils/notification_helper.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,6 +14,7 @@ import 'package:intl/intl.dart';
 
 class HomeController extends GetxController {
   CollectionReference ref = FirebaseFirestore.instance.collection('Food');
+  NotificationHelper notificationHelper = NotificationHelper();
   String getCurrency(double price) {
     return NumberFormat.decimalPattern('en_us').format(price);
   }
@@ -24,6 +27,17 @@ class HomeController extends GetxController {
     "assets/images/ic_minuman.png"
   ];
   final selectedValueIndex = 0.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    notificationHelper.scheduledNotification(
+      hour: 19,
+      minutes: 00,
+      id: 1,
+      sound: 'sound0',
+    );
+  }
 
   Stream<List<Food>> readFood(String jenis) {
     if (jenis != "All") {
@@ -129,19 +143,121 @@ class HomeSearchDelegate extends SearchDelegate {
   @override
   Widget buildResults(BuildContext context) {
     return StreamBuilder<List<Food>>(
-        stream: controller.searchFood(query),
-        builder: (context, snapshot) {
-          return Obx(
-            () => ListView.builder(
-              itemCount: snapshot.data?.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(snapshot.data?[index].nama ?? ""),
-                );
-              },
-            ),
-          );
-        });
+      stream: controller.searchFood(query),
+      builder: (context, snapshot) {
+        return (snapshot.connectionState == ConnectionState.waiting)
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : ListView.builder(
+                itemCount: snapshot.data?.length,
+                itemBuilder: (context, index) {
+                  var data = snapshot.data;
+                  if (data == null) {
+                    return const SizedBox();
+                  } else if (data[index].nama.toLowerCase().contains(
+                        query.toLowerCase(),
+                      )) {
+                    return Card(
+                      child: ListTile(
+                        dense: true,
+                        contentPadding: EdgeInsets.symmetric(
+                          vertical: 10.h,
+                          horizontal: 10.w,
+                        ),
+                        isThreeLine: true,
+                        onTap: () {
+                          Get.toNamed(Routes.DETAIL_FOOD,
+                              arguments: data[index]);
+                        },
+                        title: Text(
+                          " ${snapshot.data?[index].nama}",
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ).paddingAll(5.r),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 5.r,
+                                    vertical: 5.r,
+                                  ),
+                                  height: 20.h,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(5.r),
+                                    ),
+                                    color: Colors.green,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.alarm,
+                                        color: Colors.white,
+                                        size: 10.r,
+                                      ),
+                                      5.horizontalSpace,
+                                      Text(
+                                        "${snapshot.data?[index].waktuPembuatan.toString()} minutes",
+                                        style: TextStyle(
+                                          fontSize: 9.sp,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                10.horizontalSpace,
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 5.r,
+                                    vertical: 5.r,
+                                  ),
+                                  height: 20.h,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(5.r),
+                                      ),
+                                      color: getColor(
+                                          snapshot.data?[index].jenis ?? "")),
+                                  child: Text(
+                                    "${snapshot.data?[index].jenis}",
+                                    style: TextStyle(
+                                      fontSize: 9.sp,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            5.verticalSpace,
+                          ],
+                        ).paddingAll(5.r),
+                        trailing: Image(
+                          image: CachedNetworkImageProvider(
+                            snapshot.data?[index].images ?? "",
+                          ),
+                          height: 50,
+                          width: 50,
+                          fit: BoxFit.fill,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Icon(Icons.error);
+                          },
+                        ),
+                      ),
+                    );
+                  } else {
+                    return const SizedBox();
+                  }
+                },
+              );
+      },
+    );
   }
 
   @override
@@ -157,89 +273,107 @@ class HomeSearchDelegate extends SearchDelegate {
                 itemCount: snapshot.data?.length,
                 itemBuilder: (context, index) {
                   var data = snapshot.data;
-                  if (data == null) return const SizedBox();
-                  if (data[index].nama.startsWith(query)) {
-                    return ListTile(
-                      dense: true,
-                      contentPadding: EdgeInsets.symmetric(
-                        vertical: 10.h,
-                        horizontal: 10.w,
-                      ),
-                      isThreeLine: true,
-                      onTap: () {
-                        Get.toNamed(Routes.DETAIL_FOOD, arguments: data[index]);
-                      },
-                      title: Text(
-                        " ${snapshot.data?[index].nama}",
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w500,
+                  if (data == null) {
+                    return const SizedBox();
+                  } else if (data[index].nama.toLowerCase().contains(
+                        query.toLowerCase(),
+                      )) {
+                    return Card(
+                      child: ListTile(
+                        dense: true,
+                        contentPadding: EdgeInsets.symmetric(
+                          vertical: 10.h,
+                          horizontal: 10.w,
                         ),
-                      ).paddingAll(5.r),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 5.r,
-                                  vertical: 5.r,
-                                ),
-                                height: 20.h,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(5.r),
+                        isThreeLine: true,
+                        onTap: () {
+                          Get.toNamed(Routes.DETAIL_FOOD,
+                              arguments: data[index]);
+                        },
+                        title: Text(
+                          " ${snapshot.data?[index].nama}",
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ).paddingAll(5.r),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 5.r,
+                                    vertical: 5.r,
                                   ),
-                                  color: Colors.amber,
-                                ),
-                                child: Text(
-                                  "Rp. ${controller.getCurrency(snapshot.data?[index].waktuPembuatan.toDouble() ?? 0)}",
-                                  style: TextStyle(
-                                    fontSize: 10.sp,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                              10.horizontalSpace,
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 5.r,
-                                  vertical: 5.r,
-                                ),
-                                height: 20.h,
-                                decoration: BoxDecoration(
+                                  height: 20.h,
+                                  decoration: BoxDecoration(
                                     borderRadius: BorderRadius.all(
                                       Radius.circular(5.r),
                                     ),
-                                    color: Colors.amber),
-                                child: Text(
-                                  "${snapshot.data?[index].jenis}",
-                                  style: TextStyle(
-                                    fontSize: 10.sp,
-                                    color: Colors.white,
+                                    color: Colors.green,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.alarm,
+                                        color: Colors.white,
+                                        size: 10.r,
+                                      ),
+                                      5.horizontalSpace,
+                                      Text(
+                                        "${snapshot.data?[index].waktuPembuatan.toString()} minutes",
+                                        style: TextStyle(
+                                          fontSize: 9.sp,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ),
-                            ],
+                                10.horizontalSpace,
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 5.r,
+                                    vertical: 5.r,
+                                  ),
+                                  height: 20.h,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(5.r),
+                                      ),
+                                      color: getColor(
+                                          snapshot.data?[index].jenis ?? "")),
+                                  child: Text(
+                                    "${snapshot.data?[index].jenis}",
+                                    style: TextStyle(
+                                      fontSize: 9.sp,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            5.verticalSpace,
+                          ],
+                        ).paddingAll(5.r),
+                        trailing: Image(
+                          image: CachedNetworkImageProvider(
+                            snapshot.data?[index].images ?? "",
                           ),
-                          5.verticalSpace,
-                        ],
-                      ).paddingAll(5.r),
-                      trailing: Image(
-                        image: CachedNetworkImageProvider(
-                          snapshot.data?[index].images ?? "",
+                          height: 50,
+                          width: 50,
+                          fit: BoxFit.fill,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Icon(Icons.error);
+                          },
                         ),
-                        height: 50,
-                        width: 50,
-                        fit: BoxFit.fill,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Icon(Icons.error);
-                        },
                       ),
                     );
+                  } else {
+                    return const SizedBox();
                   }
-                  return Container();
                 },
               );
       },

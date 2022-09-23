@@ -17,6 +17,10 @@ dependencies:
   cached_network_image: ^3.2.1
   image_picker: 0.8.5+3
   flutter_native_splash: 2.2.9
+  palette_generator: ^0.3.3+2
+  flutter_local_notifications: ^11.0.0
+  flutter_native_timezone: ^2.0.0
+  get_storage: 2.0.3
   flutter: 
     sdk: flutter
 
@@ -28,19 +32,26 @@ dev_dependencies:
 flutter: 
   assets: 
     - assets/images/
+  fonts: 
+    - family: Poppins
+      fonts: 
+        - asset: assets/fonts/Poppins-Regular.ttf
+        - asset: assets/fonts/Poppins-Medium.ttf
+        - asset: assets/fonts/Poppins-SemiBold.ttf
+        - asset: assets/fonts/Poppins-Bold.ttf
+        - asset: assets/fonts/Poppins-ExtraBold.ttf
+        - asset: assets/fonts/Poppins-Black.ttf
   uses-material-design: true
 
-# flutter_native_splash-development.yaml
-flutter_native_splash:
-  color: "#ffffff"
+flutter_native_splash: 
+  color: '#ffffff'
   image: assets/images/app_icon.png
-  color_dark: "#121212"
+  color_dark: '#121212'
   image_dark: assets/images/app_icon.png
-
-  android_12:
+  android_12: 
     image: assets/images/app_icon.png
-    icon_background_color: "#ffffff"
+    icon_background_color: '#ffffff'
     image_dark: assets/images/app_icon.png
-    icon_background_color_dark: "#121212"
-
+    icon_background_color_dark: '#121212'
   web: false
+

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_food_app/app/data/Food.dart';
 import 'package:firebase_food_app/app/routes/app_pages.dart';
+import 'package:firebase_food_app/app/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -15,7 +16,6 @@ class DetailFoodView extends GetView<DetailFoodController> {
   const DetailFoodView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    final food = Get.arguments as Food;
     return Scaffold(
       backgroundColor: Colors.white,
       bottomNavigationBar: Container(
@@ -40,7 +40,7 @@ class DetailFoodView extends GetView<DetailFoodController> {
           children: [
             GestureDetector(
               onTap: () {
-                deleteMenu(food.id);
+                deleteMenu(controller.food.id);
               },
               child: Container(
                   width: 150.w,
@@ -63,7 +63,7 @@ class DetailFoodView extends GetView<DetailFoodController> {
             ),
             GestureDetector(
               onTap: () {
-                editMenu(food, context);
+                editMenu(controller.food, context);
               },
               child: Container(
                   width: 150.w,
@@ -88,16 +88,17 @@ class DetailFoodView extends GetView<DetailFoodController> {
         ),
       ),
       body: StreamBuilder<Food>(
-          stream: controller.getFood(food.id),
+          stream: controller.getFood(controller.food.id),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasData) {
+              controller.food = snapshot.data!;
               return CustomScrollView(
                 slivers: [
                   SliverAppBar(
                     expandedHeight: 300.h,
-                    backgroundColor: Colors.red,
+                    backgroundColor: controller.dominantColor,
                     pinned: true,
                     leading: ClipRRect(
                       borderRadius: BorderRadius.circular(50.r),
@@ -119,22 +120,48 @@ class DetailFoodView extends GetView<DetailFoodController> {
                       child: Container(
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
+                            horizontal: 20, vertical: 20),
                         decoration: const BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
+                            topLeft: Radius.circular(30),
+                            topRight: Radius.circular(30),
                           ),
                         ),
-                        child: Center(
-                          child: Text(
-                            snapshot.data!.nama,
-                            style: TextStyle(
-                              fontSize: 28.sp,
-                              fontWeight: FontWeight.bold,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Flexible(
+                              fit: FlexFit.loose,
+                              child: Text(
+                                snapshot.data!.nama,
+                                style: TextStyle(
+                                  fontSize: 24.sp,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
                             ),
-                          ),
+                            10.verticalSpace,
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 5.r,
+                                vertical: 5.r,
+                              ),
+                              height: 30.h,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(5.r),
+                                  ),
+                                  color: getColor(snapshot.data?.jenis ?? "")),
+                              child: Text(
+                                "${snapshot.data?.jenis}",
+                                style: TextStyle(
+                                  fontSize: 11.sp,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -158,7 +185,7 @@ class DetailFoodView extends GetView<DetailFoodController> {
                               "Waktu Pembuatan",
                               style: TextStyle(
                                 fontSize: 16.sp,
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                             10.verticalSpace,
@@ -172,24 +199,20 @@ class DetailFoodView extends GetView<DetailFoodController> {
                                   "${snapshot.data!.waktuPembuatan} Menit",
                                   style: TextStyle(
                                     fontSize: 16.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.grey[500],
                                   ),
                                 ),
                               ],
                             ),
                             20.verticalSpace,
                             Text(
-                              "Deskripsi",
-                              style: TextStyle(
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            10.verticalSpace,
-                            Text(
                               snapshot.data!.deskripsi,
                               textAlign: TextAlign.justify,
                               style: TextStyle(
                                 fontSize: 16.sp,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey[500],
                               ),
                             ),
                             20.verticalSpace,
@@ -197,7 +220,7 @@ class DetailFoodView extends GetView<DetailFoodController> {
                               "Resep dan Cara Membuat",
                               style: TextStyle(
                                 fontSize: 16.sp,
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                             10.verticalSpace,
@@ -206,6 +229,8 @@ class DetailFoodView extends GetView<DetailFoodController> {
                               textAlign: TextAlign.justify,
                               style: TextStyle(
                                 fontSize: 16.sp,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey[500],
                               ),
                             ),
                           ],
@@ -349,73 +374,52 @@ class DetailFoodView extends GetView<DetailFoodController> {
                   hintText: food.nama.toString(),
                 ),
                 30.verticalSpace,
-                Row(
-                  children: [
-                    Flexible(
-                      child: SizedBox(
-                        height: ScreenUtil().setHeight(40),
-                        width: 0.8.sw,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            //deleteMenu(snapshot, index);
-                            Get.back();
-                            Get.snackbar(
-                              "Hapus Berhasil",
-                              "Data Telah Berhasil Dihapus",
-                              snackPosition: SnackPosition.TOP,
-                              backgroundColor: Colors.green,
-                              colorText: Colors.white,
-                            );
-                          },
-                          child: const Text('Hapus Menu'),
-                        ),
+                Flexible(
+                  child: SizedBox(
+                    height: ScreenUtil().setHeight(40),
+                    width: 1.sw,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
                       ),
+                      onPressed: () async {
+                        if (image.value.path.isNotEmpty) {
+                          await controller.updateMenuWithImage(
+                            food.id,
+                            namaController.text,
+                            int.parse(waktuPembuatanController.text),
+                            deskripsiController.text,
+                            food.jenis,
+                            File(image.value.path),
+                            resepController.text,
+                          );
+                        } else {
+                          await controller.updateMenu(
+                            food.id,
+                            namaController.text,
+                            int.parse(waktuPembuatanController.text),
+                            deskripsiController.text,
+                            food.jenis,
+                            food.images,
+                            resepController.text,
+                          );
+                        }
+                        Get.back();
+                        Get.snackbar(
+                          "Edit Berhasil",
+                          "Data Telah Berhasil Diedit",
+                          snackPosition: SnackPosition.TOP,
+                          backgroundColor: Colors.green,
+                          colorText: Colors.white,
+                        );
+                        namaController.dispose();
+                        waktuPembuatanController.dispose();
+                        deskripsiController.dispose();
+                        resepController.dispose();
+                      },
+                      child: const Text('Simpan Menu'),
                     ),
-                    10.horizontalSpace,
-                    Flexible(
-                      child: SizedBox(
-                        height: ScreenUtil().setHeight(40),
-                        width: 0.5.sw,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue,
-                          ),
-                          onPressed: () async {
-                            if (image.value.path.isNotEmpty) {
-                              await controller.updateMenuWithImage(
-                                food.id,
-                                namaController.text,
-                                int.parse(waktuPembuatanController.text),
-                                deskripsiController.text,
-                                food.jenis,
-                                File(image.value.path),
-                                resepController.text,
-                              );
-                            } else {
-                              await controller.updateMenu(
-                                food.id,
-                                namaController.text,
-                                int.parse(waktuPembuatanController.text),
-                                deskripsiController.text,
-                                food.jenis,
-                                food.images,
-                                resepController.text,
-                              );
-                            }
-                            Get.back();
-                            Get.snackbar(
-                              "Edit Berhasil",
-                              "Data Telah Berhasil Diedit",
-                              snackPosition: SnackPosition.TOP,
-                              backgroundColor: Colors.green,
-                              colorText: Colors.white,
-                            );
-                          },
-                          child: const Text('Simpan Menu'),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ],
             ).paddingSymmetric(vertical: 10.h, horizontal: 20.w),
@@ -495,17 +499,11 @@ class RoundedInputField extends StatelessWidget {
       width: width,
       height: height,
       alignment: Alignment.center,
-      child: TextFormField(
-        validator: (value) {
-          if (value!.isEmpty) {
-            return 'Please enter some text';
-          }
-          return null;
-        },
+      child: TextField(
         onChanged: onChanged,
         controller: textEditingController,
         maxLines: maxLines ?? 1,
-        keyboardType: keyboardType ?? TextInputType.text,
+        keyboardType: keyboardType,
         decoration: InputDecoration(
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(roundedCorner!),
@@ -515,9 +513,6 @@ class RoundedInputField extends StatelessWidget {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(roundedCorner!),
-            borderSide: const BorderSide(
-              color: Colors.green,
-            ),
           ),
           contentPadding: padding ??
               const EdgeInsets.symmetric(vertical: 10, horizontal: 10),

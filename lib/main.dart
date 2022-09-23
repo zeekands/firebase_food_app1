@@ -2,13 +2,17 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 import 'app/routes/app_pages.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  await ScreenUtil.ensureScreenSize();
-  await Firebase.initializeApp();
+  await ScreenUtil.ensureScreenSize(); // flutter_screenutil
+  await Firebase.initializeApp(); // firebase_core
+  await GetStorage.init(); // get_storage
+  tz.initializeTimeZones(); // timezone for local notification
   runApp(
     ScreenUtilInit(
       designSize: const Size(414, 896),
@@ -29,6 +33,7 @@ void main() async {
               fontSize: 18,
             ),
           ),
+          fontFamily: "Poppins",
         ),
       ),
     ),

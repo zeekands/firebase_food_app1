@@ -90,9 +90,11 @@ class HomeView extends GetView<HomeController> {
                   style:
                       TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w500)),
               IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Get.toNamed(Routes.SETTING_PAGE);
+                  },
                   icon: const Icon(
-                    Icons.notifications,
+                    Icons.settings,
                     color: Colors.red,
                   ))
             ],
@@ -136,6 +138,7 @@ class HomeView extends GetView<HomeController> {
                           mainAxisSpacing: 10.h,
                           crossAxisSpacing: 10.h,
                           crossAxisCount: 2,
+                          childAspectRatio: 0.95,
                         ),
                         itemBuilder: (_, index) => GestureDetector(
                           onTap: () {
@@ -228,7 +231,7 @@ class HomeView extends GetView<HomeController> {
                                             child: Text(
                                               "${snapshot.data?[index].jenis}",
                                               style: TextStyle(
-                                                fontSize: 10.sp,
+                                                fontSize: 9.sp,
                                                 color: Colors.white,
                                               ),
                                             ),
