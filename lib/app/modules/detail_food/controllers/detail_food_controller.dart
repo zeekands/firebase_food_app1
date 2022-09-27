@@ -7,10 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:palette_generator/palette_generator.dart';
 
-class DetailFoodController extends GetxController {
+class DetailFoodController extends GetxController with StateMixin {
   CollectionReference ref = FirebaseFirestore.instance.collection('Food');
   Color dominantColor = Colors.red;
   var food = Get.arguments as Food;
+
   Stream<Food> getFood(String id) {
     return FirebaseFirestore.instance
         .collection('Food')
@@ -26,6 +27,7 @@ class DetailFoodController extends GetxController {
 
   Future<void> updateMenu(String id, String nama, int waktuPembuatan,
       String deskripsi, String jenis, String image, String resep) async {
+    change(null, status: RxStatus.loading());
     final refDoc = ref.doc(id);
     final data = {
       "id": id,
@@ -36,7 +38,11 @@ class DetailFoodController extends GetxController {
       "images": image,
       "resep": resep,
     };
-    refDoc.set(data);
+    refDoc
+        .set(data)
+        .then((value) => change(null, status: RxStatus.success()))
+        .onError((error, stackTrace) =>
+            change(null, status: RxStatus.error(error.toString())));
   }
 
   Future<String> uploadFile(File image) async {
@@ -61,6 +67,7 @@ class DetailFoodController extends GetxController {
     File images,
     String resep,
   ) async {
+    change(null, status: RxStatus.loading());
     String imageURL = await uploadFile(images);
     final refDoc = ref.doc(id);
     final data = {
@@ -72,7 +79,11 @@ class DetailFoodController extends GetxController {
       "images": imageURL,
       "resep": resep,
     };
-    refDoc.set(data);
+    refDoc
+        .set(data)
+        .then((value) => change(null, status: RxStatus.success()))
+        .onError((error, stackTrace) =>
+            change(null, status: RxStatus.error(error.toString())));
   }
 
   Future<Color> updatePaletteGenerator(String path) async {
@@ -87,6 +98,7 @@ class DetailFoodController extends GetxController {
   void onInit() async {
     super.onInit();
 
+    change(null, status: RxStatus.empty());
     await updatePaletteGenerator(food.images).then(
       (value) {
         dominantColor = value;

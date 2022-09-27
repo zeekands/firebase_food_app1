@@ -258,7 +258,7 @@ class HomeView extends GetView<HomeController> {
             ),
           )
         ],
-      ).paddingSymmetric(horizontal: 20.w),
+      ).paddingOnly(left: 20.w, right: 20.w, bottom: 20.h),
     );
   }
 

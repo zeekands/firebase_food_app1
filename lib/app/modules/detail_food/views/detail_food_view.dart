@@ -374,52 +374,160 @@ class DetailFoodView extends GetView<DetailFoodController> {
                   hintText: food.nama.toString(),
                 ),
                 30.verticalSpace,
-                Flexible(
-                  child: SizedBox(
-                    height: ScreenUtil().setHeight(40),
-                    width: 1.sw,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
+                controller.obx(
+                  (state) => Flexible(
+                    child: SizedBox(
+                      height: ScreenUtil().setHeight(40),
+                      width: 1.sw,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                        ),
+                        onPressed: () async {
+                          if (image.value.path.isNotEmpty) {
+                            await controller.updateMenuWithImage(
+                              food.id,
+                              namaController.text,
+                              int.parse(waktuPembuatanController.text),
+                              deskripsiController.text,
+                              food.jenis,
+                              File(image.value.path),
+                              resepController.text,
+                            );
+                          } else {
+                            await controller.updateMenu(
+                              food.id,
+                              namaController.text,
+                              int.parse(waktuPembuatanController.text),
+                              deskripsiController.text,
+                              food.jenis,
+                              food.images,
+                              resepController.text,
+                            );
+                          }
+                          Get.back();
+                          Get.snackbar(
+                            "Edit Berhasil",
+                            "Data Telah Berhasil Diedit",
+                            snackPosition: SnackPosition.TOP,
+                            backgroundColor: Colors.green,
+                            colorText: Colors.white,
+                          );
+                          namaController.dispose();
+                          waktuPembuatanController.dispose();
+                          deskripsiController.dispose();
+                          resepController.dispose();
+                        },
+                        child: const Text('Simpan Menu'),
                       ),
-                      onPressed: () async {
-                        if (image.value.path.isNotEmpty) {
-                          await controller.updateMenuWithImage(
-                            food.id,
-                            namaController.text,
-                            int.parse(waktuPembuatanController.text),
-                            deskripsiController.text,
-                            food.jenis,
-                            File(image.value.path),
-                            resepController.text,
-                          );
-                        } else {
-                          await controller.updateMenu(
-                            food.id,
-                            namaController.text,
-                            int.parse(waktuPembuatanController.text),
-                            deskripsiController.text,
-                            food.jenis,
-                            food.images,
-                            resepController.text,
-                          );
-                        }
-                        Get.back();
-                        Get.snackbar(
-                          "Edit Berhasil",
-                          "Data Telah Berhasil Diedit",
-                          snackPosition: SnackPosition.TOP,
-                          backgroundColor: Colors.green,
-                          colorText: Colors.white,
-                        );
-                        namaController.dispose();
-                        waktuPembuatanController.dispose();
-                        deskripsiController.dispose();
-                        resepController.dispose();
-                      },
-                      child: const Text('Simpan Menu'),
                     ),
                   ),
+                  onEmpty: Flexible(
+                    child: SizedBox(
+                      height: ScreenUtil().setHeight(40),
+                      width: 1.sw,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                        ),
+                        onPressed: () async {
+                          if (image.value.path.isNotEmpty) {
+                            await controller.updateMenuWithImage(
+                              food.id,
+                              namaController.text,
+                              int.parse(waktuPembuatanController.text),
+                              deskripsiController.text,
+                              food.jenis,
+                              File(image.value.path),
+                              resepController.text,
+                            );
+                          } else {
+                            await controller.updateMenu(
+                              food.id,
+                              namaController.text,
+                              int.parse(waktuPembuatanController.text),
+                              deskripsiController.text,
+                              food.jenis,
+                              food.images,
+                              resepController.text,
+                            );
+                          }
+                          Get.back();
+                          Get.snackbar(
+                            "Edit Berhasil",
+                            "Data Telah Berhasil Diedit",
+                            snackPosition: SnackPosition.TOP,
+                            backgroundColor: Colors.green,
+                            colorText: Colors.white,
+                          );
+                          namaController.dispose();
+                          waktuPembuatanController.dispose();
+                          deskripsiController.dispose();
+                          resepController.dispose();
+                        },
+                        child: const Text('Simpan Menu'),
+                      ),
+                    ),
+                  ),
+                  onLoading: const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                  onError: (error) {
+                    Get.snackbar(
+                      "Error",
+                      error.toString(),
+                      snackPosition: SnackPosition.TOP,
+                      backgroundColor: Colors.red,
+                      colorText: Colors.white,
+                    );
+                    return Flexible(
+                      child: SizedBox(
+                        height: ScreenUtil().setHeight(40),
+                        width: 1.sw,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                          ),
+                          onPressed: () async {
+                            if (image.value.path.isNotEmpty) {
+                              await controller.updateMenuWithImage(
+                                food.id,
+                                namaController.text,
+                                int.parse(waktuPembuatanController.text),
+                                deskripsiController.text,
+                                food.jenis,
+                                File(image.value.path),
+                                resepController.text,
+                              );
+                            } else {
+                              await controller.updateMenu(
+                                food.id,
+                                namaController.text,
+                                int.parse(waktuPembuatanController.text),
+                                deskripsiController.text,
+                                food.jenis,
+                                food.images,
+                                resepController.text,
+                              );
+                            }
+                            Get.back();
+                            Get.snackbar(
+                              "Edit Berhasil",
+                              "Data Telah Berhasil Diedit",
+                              snackPosition: SnackPosition.TOP,
+                              backgroundColor: Colors.green,
+                              colorText: Colors.white,
+                            );
+                            namaController.dispose();
+                            waktuPembuatanController.dispose();
+                            deskripsiController.dispose();
+                            resepController.dispose();
+                          },
+                          child: const Text('Simpan Menu'),
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ],
             ).paddingSymmetric(vertical: 10.h, horizontal: 20.w),
