@@ -118,7 +118,7 @@ class HomeView extends GetView<HomeController> {
           Flexible(
             child: Obx(
               () => StreamBuilder<List<Food>>(
-                  stream: controller.readFood(controller
+                  stream: controller.readRecipe(controller
                       .buttonText[controller.selectedValueIndex.value]),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {

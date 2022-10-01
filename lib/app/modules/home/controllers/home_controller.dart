@@ -1,45 +1,34 @@
-import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_food_app/app/data/Food.dart';
 import 'package:firebase_food_app/app/routes/app_pages.dart';
 import 'package:firebase_food_app/app/utils/colors.dart';
-import 'package:firebase_food_app/app/utils/notification_helper.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 class HomeController extends GetxController {
-  CollectionReference ref = FirebaseFirestore.instance.collection('Food');
-  NotificationHelper notificationHelper = NotificationHelper();
-  String getCurrency(double price) {
-    return NumberFormat.decimalPattern('en_us').format(price);
-  }
+  CollectionReference ref = FirebaseFirestore.instance
+      .collection('Food'); //Membuat referensi ke collection Food
 
-  final buttonText = ["All", "Makanan", "Kuah", "Minuman"];
+  final buttonText = [
+    "All",
+    "Makanan",
+    "Kuah",
+    "Minuman",
+  ]; //variable untuk menampung data button
+
   final iconButton = [
     "assets/images/ic_makanan.png",
     "assets/images/ic_makanan.png",
     "assets/images/ic_kuah.png",
     "assets/images/ic_minuman.png"
-  ];
-  final selectedValueIndex = 0.obs;
+  ]; //variable untuk menampung data icon button
 
-  @override
-  void onInit() {
-    super.onInit();
-    notificationHelper.scheduledNotification(
-      hour: 19,
-      minutes: 00,
-      id: 1,
-      sound: 'sound0',
-    );
-  }
+  final selectedValueIndex =
+      0.obs; //variable untuk menampung data index button yang dipilih
 
-  Stream<List<Food>> readFood(String jenis) {
+  Stream<List<Food>> readRecipe(String jenis) {
     if (jenis != "All") {
       return FirebaseFirestore.instance
           .collection('Food')
@@ -61,56 +50,6 @@ class HomeController extends GetxController {
         .snapshots()
         .map((snapshot) =>
             snapshot.docs.map((doc) => Food.fromJson(doc.data())).toList());
-  }
-
-  Future<void> deleteMenu(String id) async {
-    final refDoc = ref.doc(id);
-    refDoc.delete();
-  }
-
-  Future<void> updateMenu(
-      String id, String nama, int harga, String jenis, String image) async {
-    final refDoc = ref.doc(id);
-    final data = {
-      "id": id,
-      "nama": nama,
-      "harga": harga,
-      "jenis": jenis,
-      "images": image,
-    };
-    refDoc.set(data);
-  }
-
-  Future<String> uploadFile(File image) async {
-    final storageReference =
-        FirebaseStorage.instance.ref().child('Menus/${image.path}');
-    await storageReference.putFile(image);
-    String returnURL = "";
-    await storageReference.getDownloadURL().then(
-      (fileURL) {
-        returnURL = fileURL;
-      },
-    );
-    return returnURL;
-  }
-
-  Future<void> updateMenuWithImage(
-    String id,
-    String nama,
-    int harga,
-    String jenis,
-    File images,
-  ) async {
-    String imageURL = await uploadFile(images);
-    final refDoc = ref.doc(id);
-    final data = {
-      "id": id,
-      "nama": nama,
-      "harga": harga,
-      "jenis": jenis,
-      "images": imageURL,
-    };
-    refDoc.set(data);
   }
 }
 

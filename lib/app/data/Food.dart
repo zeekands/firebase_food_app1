@@ -28,16 +28,4 @@ class Food {
       resep: json['resep'] as String,
     );
   }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'nama': nama,
-      'deskripsi': deskripsi,
-      'waktu_pembuatan': waktuPembuatan,
-      'jenis': jenis,
-      'images': images,
-      'resep': resep,
-    };
-  }
 }

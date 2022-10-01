@@ -107,27 +107,4 @@ class AddFoodController extends GetxController {
     refDoc.set(data);
     Get.back();
   }
-
-  Future<void> editMenu(
-    String id,
-    String nama,
-    int waktuPembuatan,
-    String deskripsi,
-    String jenis,
-    File images,
-    String resep,
-  ) async {
-    String imageURL = await uploadFile(images);
-    final refDoc = ref.doc(id);
-    final data = {
-      "id": id,
-      "nama": nama,
-      "deskripsi": deskripsi,
-      "waktu_pembuatan": waktuPembuatan,
-      "jenis": jenis,
-      "resep": resep,
-      "images": imageURL
-    };
-    refDoc.set(data);
-  }
 }
