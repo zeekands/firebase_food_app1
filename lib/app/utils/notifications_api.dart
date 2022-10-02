@@ -89,8 +89,9 @@ class NotifictionApi {
   }
 
   static tz.TZDateTime _scheduledDaily(Time time) {
-    final now = tz.TZDateTime.now(tz.local);
-    tz.TZDateTime scheduledDate = tz.TZDateTime(tz.local, now.year, now.month,
+    final jakarta = tz.getLocation('Asia/Jakarta');
+    final now = tz.TZDateTime.now(jakarta);
+    tz.TZDateTime scheduledDate = tz.TZDateTime(jakarta, now.year, now.month,
         now.day, time.hour, time.minute, time.second);
 
     return scheduledDate.isBefore(now)

@@ -33,8 +33,8 @@ class SettingPageController extends GetxController {
     if (sarapanToggle.value) {
       NotifictionApi.scheduledNotification(
         id: 1,
-        title: "Pengingat Sarapan",
-        body: "Sudah waktunya sarapan nih, jangan lupa sarapan ya",
+        title: "Jangan Lupa Sarapan",
+        body: "Yuk cek resep di katalog!",
         payload: "sarapan",
         scheduledDate: const Time(7, 0, 0),
       ).then((value) {
@@ -58,8 +58,8 @@ class SettingPageController extends GetxController {
     if (siangToggle.value) {
       await NotifictionApi.scheduledNotification(
         id: 2,
-        title: "Pengingat Makan Siang",
-        body: "Jangan lupa makan siang ya",
+        title: "Lets have lunch!",
+        body: "Lihat resep makanan siang hari ini",
         payload: "siang",
         scheduledDate: const Time(12, 0, 0),
       ).then((value) {
@@ -84,8 +84,8 @@ class SettingPageController extends GetxController {
     if (malamToggle.value) {
       NotifictionApi.scheduledNotification(
         id: 3,
-        title: "Pengingat Makan Malam",
-        body: "Jangan lupa makan malam ya",
+        title: "Yuk Dinner",
+        body: "Jangan lupa makan malam ya, nanti tidurnya akan lebih nyenyak",
         payload: "malam",
         scheduledDate: const Time(18, 0, 0),
       ).then((value) {
