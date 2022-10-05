@@ -7,6 +7,7 @@ abstract class Routes {
   static const ADD_FOOD = _Paths.ADD_FOOD;
   static const DETAIL_FOOD = _Paths.DETAIL_FOOD;
   static const SETTING_PAGE = _Paths.SETTING_PAGE;
+  static const MEAL_LIST = _Paths.MEAL_LIST;
 }
 
 abstract class _Paths {
@@ -15,4 +16,5 @@ abstract class _Paths {
   static const ADD_FOOD = '/add-food';
   static const DETAIL_FOOD = '/detail-food';
   static const SETTING_PAGE = '/setting-page';
+  static const MEAL_LIST = '/meal-list';
 }

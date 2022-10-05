@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_food_app/app/modules/home/models/restaurant_model.dart';
+import 'package:firebase_food_app/app/modules/home/models/meals_model.dart';
+import 'package:firebase_food_app/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -50,14 +51,14 @@ class HomeView extends GetView<HomeController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Restoran List From API",
+            "List Meal From API",
             style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w500),
           ).paddingOnly(bottom: 20.h),
           Flexible(
-            child: FutureBuilder<RestaurantModel>(
-              future: controller.getRestaurants(),
+            child: FutureBuilder<MealsModel>(
+              future: controller.getMeals(),
               builder: (_, snapshot) {
-                var data = snapshot.data?.restaurants;
+                var data = snapshot.data?.categories;
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(
                     child: CircularProgressIndicator(),
@@ -77,7 +78,12 @@ class HomeView extends GetView<HomeController> {
                       crossAxisCount: 2,
                       childAspectRatio: .8,
                     ),
-                    itemBuilder: (_, index) => itemRestaurant(data, index),
+                    itemBuilder: (_, index) => GestureDetector(
+                        onTap: () => Get.toNamed(
+                              Routes.MEAL_LIST,
+                              arguments: data![index].strCategory,
+                            ),
+                        child: itemRestaurant(data, index)),
                     itemCount: data?.length,
                   );
                 } else {
@@ -93,7 +99,7 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  Container itemRestaurant(List<Restaurants>? data, int index) {
+  Container itemRestaurant(List<Categories>? data, int index) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -118,8 +124,7 @@ class HomeView extends GetView<HomeController> {
               ),
             ),
             child: CachedNetworkImage(
-              imageUrl:
-                  "https://restaurant-api.dicoding.dev/images/medium/${data?[index].pictureId}",
+              imageUrl: "${data?[index].strCategoryThumb}",
               height: 135.h,
               width: 200.w,
               fit: BoxFit.cover,
@@ -132,66 +137,31 @@ class HomeView extends GetView<HomeController> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               mainAxisSize: MainAxisSize.min,
               children: [
+                Text(
+                  data?[index].strCategory ?? "",
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 Flexible(
                   child: Text(
-                    data?[index].name ?? "",
+                    data?[index].strCategoryDescription ?? "",
+                    maxLines: 3,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
+                    style: TextStyle(
+                      fontSize: ScreenUtil().setSp(12),
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey[600],
                     ),
                   ),
                 ),
-                const Spacer(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.location_on_rounded,
-                          color: Colors.red,
-                        ),
-                        5.horizontalSpace,
-                        Text(
-                          data?[index].city ?? "",
-                          style: TextStyle(
-                            fontSize: ScreenUtil().setSp(12),
-                            fontWeight: FontWeight.w500,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.star,
-                          color: Colors.yellow,
-                        ),
-                        5.horizontalSpace,
-                        Text(
-                          data?[index].rating ?? "",
-                          style: TextStyle(
-                            fontSize: ScreenUtil().setSp(12),
-                            fontWeight: FontWeight.w500,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                15.verticalSpace,
               ],
             ).paddingOnly(
               top: 10.h,
               left: 10.w,
               right: 10.w,
+              bottom: 10.h,
             ),
           ),
         ],
